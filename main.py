@@ -16,7 +16,13 @@ if __name__ == '__main__':
         cursor = connect.cursor()
         cursor.execute(DROP_TABLE_USERS)
         cursor.execute(USERS_TABLE)
-        print('Conexión realizada de forma exitosa!')
+        
     except pymysql.err.OperationalError as err:
         print('No fue posible realizar la conexión!')   
         print(err)
+    
+    finally:
+        cursor.close()
+        connect.close()
+        
+        print('Conexión finalizada de forma exitosa')
