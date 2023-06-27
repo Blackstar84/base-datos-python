@@ -40,8 +40,23 @@ if __name__ == '__main__':
             cursor.execute(DROP_TABLE_USERS)
             cursor.execute(USERS_TABLE)
             
+            #query = "INSERT INTO users(username, password,email) VALUES('eduardo_gpg', 'password123', 'eduardo@codigofacilito.com')"
+            
             query = "INSERT INTO users(username, password,email) VALUES(%s, %s, %s)"
             values = ('eduardo_gpg', 'password123', 'eduardo@codigofacilito.com')
+            
+            #query = "INSERT INTO users(username, password,email) VALUES('{}', '{}', '{}')".format("user1", "password", "user1@codigofacilito.com")
+            
+            
+            
+            """ username = "user2"
+            password = "password"
+            email = "user2@codigofacilito.com"
+            
+            query = f"INSERT INTO users(username, password,email) VALUES('{username}','{password}', '{email}')"
+            
+            cursor.execute(query) """
+            
             
             cursor.execute(query, values)
             connect.commit()
