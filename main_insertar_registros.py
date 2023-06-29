@@ -25,7 +25,18 @@ users = [
             ]
 
 if __name__ == '__main__':
-    try:        
+    try:
+        """ connect = pymysql.Connect(host='localhost', 
+                                  port=3306, 
+                                  user='root', 
+                                  passwd='root', 
+                                  db='pythondb') """
+        """connect = pymysql.Connect(host='localhost', 
+                                  port=3306, 
+                                  user=os.getenv('USER_MYSQL'), 
+                                  passwd=os.getenv('PASSWORD_MYSQL'), 
+                                  db=os.getenv('DB_MYSQL'))""" 
+        
         connect = pymysql.Connect(host='localhost', 
                                   port=3306, 
                                   user=config('USER_MYSQL'), 
@@ -38,18 +49,32 @@ if __name__ == '__main__':
             cursor.execute(DROP_TABLE_USERS)
             cursor.execute(USERS_TABLE)
             
+            #query = "INSERT INTO users(username, password,email) VALUES('eduardo_gpg', 'password123', 'eduardo@codigofacilito.com')"
+            
             query = "INSERT INTO users(username, password,email) VALUES(%s, %s, %s)"
-           
+            #values = ('eduardo_gpg', 'password123', 'eduardo@codigofacilito.com')
             
             """ for user in users:
                 cursor.execute(query, user) """
                 
-            cursor.executemany(query, users)   
-           
+            cursor.executemany(query, users)    
+            
+            #query = "INSERT INTO users(username, password,email) VALUES('{}', '{}', '{}')".format("user1", "password", "user1@codigofacilito.com")
+            
+            
+            
+            """ username = "user2"
+            password = "password"
+            email = "user2@codigofacilito.com"
+            
+            query = f"INSERT INTO users(username, password,email) VALUES('{username}','{password}', '{email}')"
+            
+            cursor.execute(query) """
             
             
             
             
+            #cursor.execute(query, values)
             connect.commit()
         
     except pymysql.err.OperationalError as err:
