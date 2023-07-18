@@ -45,8 +45,26 @@ if __name__ == '__main__':
                 cursor.execute(query, user) """
                 
             cursor.executemany(query, users)   
-           
             
+            
+            #query = "SELECT * FROM users"
+            
+            #query = "SELECT * FROM users ORDER BY id DESC"
+            #query = "SELECT * FROM users WHERE id >= 3"
+            #query = "SELECT id, username, email FROM users WHERE id >= 3"
+            #query = "SELECT id, username, email FROM users LIMIT 3"
+            query = "SELECT id, username, email FROM users"
+            rows = cursor.execute(query)
+            
+            """ print(cursor.fetchall())
+            
+            print(rows)
+             """
+            """ for user in cursor.fetchall():
+                print(user) """
+            
+            for user in cursor.fetchmany(3):
+                print(user)
             
             
             
