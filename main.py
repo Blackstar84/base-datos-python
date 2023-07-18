@@ -66,11 +66,18 @@ if __name__ == '__main__':
             """ for user in cursor.fetchmany(3):
                 print(user) """
                 
-            user = cursor.fetchone() 
+            """ user = cursor.fetchone() 
             
-            print(user)
+            print(user) """
+            
+            query = "UPDATE users SET username = %s WHERE id = %s"
+            values = ("Cambio de username", 1)
+
+            
+            cursor.execute(query, values)
             
             connect.commit()
+            
         
     except pymysql.err.OperationalError as err:
         print('No fue posible realizar la conexión!')   
