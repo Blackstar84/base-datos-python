@@ -67,7 +67,6 @@ if __name__ == '__main__':
                 print(user)
             
             
-            
             connect.commit()
         
     except pymysql.err.OperationalError as err:
