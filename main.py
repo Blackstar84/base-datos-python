@@ -63,9 +63,12 @@ if __name__ == '__main__':
             """ for user in cursor.fetchall():
                 print(user) """
             
-            for user in cursor.fetchmany(3):
-                print(user)
+            """ for user in cursor.fetchmany(3):
+                print(user) """
+                
+            user = cursor.fetchone() 
             
+            print(user)
             
             connect.commit()
         
