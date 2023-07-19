@@ -1,14 +1,9 @@
-import pymysql
-from decouple import config
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
+import psycopg2
 
 DROP_TABLE_USERS = "DROP TABLE IF EXISTS users"
 
 USERS_TABLE = """CREATE TABLE users(
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id SERIAL,
     username VARCHAR(50) NOT NULL,
     password VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
@@ -26,66 +21,43 @@ users = [
 
 if __name__ == '__main__':
     try:        
-        connect = pymysql.Connect(host='localhost', 
-                                  port=3306, 
-                                  user=config('USER_MYSQL'), 
-                                  passwd=config('PASSWORD_MYSQL'), 
-                                  db=config('DB_MYSQL'))
+        connect = psycopg2.connect("dbname='pythondb' user='postgres' password='root' host='localhost'")
                                      
         cursor = connect.cursor()
+       
         with connect.cursor() as cursor: 
             
             cursor.execute(DROP_TABLE_USERS)
             cursor.execute(USERS_TABLE)
             
-            query = "INSERT INTO users(username, password,email) VALUES(%s, %s, %s)"
-           
-            
-            """ for user in users:
-                cursor.execute(query, user) """
-                
+            query = "INSERT INTO users(username, password,email) VALUES(%s, %s, %s)"    
             cursor.executemany(query, users)   
             
-            
-            #query = "SELECT * FROM users"
-            
-            #query = "SELECT * FROM users ORDER BY id DESC"
-            #query = "SELECT * FROM users WHERE id >= 3"
-            #query = "SELECT id, username, email FROM users WHERE id >= 3"
-            #query = "SELECT id, username, email FROM users LIMIT 3"
             query = "SELECT id, username, email FROM users"
             rows = cursor.execute(query)
-            
-            """ print(cursor.fetchall())
-            
-            print(rows)
-             """
-            """ for user in cursor.fetchall():
-                print(user) """
-            
-            """ for user in cursor.fetchmany(3):
-                print(user) """
-                
-            """ user = cursor.fetchone() 
-            
-            print(user) """
             
             query = "UPDATE users SET username = %s WHERE id = %s"
             values = ("Cambio de username", 1)
             
             cursor.execute(query, values)
             
-            
             query = "DELETE FROM users WHERE id = %s"
-            cursor.execute(query, (5,))
-
+            cursor.execute(query, (3,))
             
             connect.commit()
             
-        
-    except pymysql.err.OperationalError as err:
+            
+            query = "SELECT* FROM users"            
+            cursor.execute(query)
+            
+            for user in cursor.fetchall():
+                print(user)
+            
+
+    except psycopg2.OperationalError as err:
         print('No fue posible realizar la conexión!')   
         print(err)
+        
     
     finally:
         
