@@ -72,9 +72,13 @@ if __name__ == '__main__':
             
             query = "UPDATE users SET username = %s WHERE id = %s"
             values = ("Cambio de username", 1)
-
             
             cursor.execute(query, values)
+            
+            
+            query = "DELETE FROM users WHERE id = %s"
+            cursor.execute(query, (5,))
+
             
             connect.commit()
             
