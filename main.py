@@ -8,27 +8,29 @@ USERS_TABLE = """CREATE TABLE IF NOT EXISTS users(
 )
 """
 
-def create_user():
+def create_user(connect, cursor):
     """A) Crear usuario"""
-    user = input("Ingrese nombre de usuario")
-    email = input("Ingrese correo")
+    username = input("Ingresa un username: ")
+    email = input("Ingresa un email: ")
     query = "INSERT INTO users(username, email) VALUES(%s, %s)"
-    cursor.execute(query,(user, email))
+    values = (username, email)
+    cursor.execute(query, values)
     connect.commit()
+    print("Usuario creado exitosamente.")
 
-def list_users():
+def list_users(connect, cursor):
     """B) Listar usuarios"""
     pass
 
-def update_user():
+def update_user(connect, cursor):
     """C) Actualizar usuario"""
     pass
 
-def delete_user():
+def delete_user(connect, cursor):
     """D) Eliminar usuario"""
     pass 
 
-def default():
+def default(*args):
     print("Opción no valida")
 
 if __name__ == '__main__':
@@ -61,7 +63,7 @@ if __name__ == '__main__':
                     break
                 
                 function = options.get(option, default) 
-                function()
+                function(connect, cursor)
             
         connect.close()
     except psycopg2.OperationalError as err:
