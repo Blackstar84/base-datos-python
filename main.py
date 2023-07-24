@@ -1,3 +1,4 @@
+import os
 import psycopg2
 #DROP_USERS_TABLE = "DROP TABLE IF EXISTS users"
 USERS_TABLE = """CREATE TABLE IF NOT EXISTS users(
@@ -8,6 +9,17 @@ USERS_TABLE = """CREATE TABLE IF NOT EXISTS users(
 )
 """
 
+def system_clear(function):
+    def wrapper(connect, cursor):
+        os.system("cls")
+        
+        function(connect, cursor)
+        input("")
+        os.system("cls")
+    wrapper.__doc__ = function.__doc__
+    return wrapper    
+
+@system_clear
 def create_user(connect, cursor):
     """A) Crear usuario"""
     username = input("Ingresa un username: ")
@@ -18,6 +30,7 @@ def create_user(connect, cursor):
     connect.commit()
     print(">>> Usuario creado exitosamente.")
 
+@system_clear
 def list_users(connect, cursor):
     """B) Listar usuarios"""
     query = "SELECT id, username, email FROM users"
@@ -25,50 +38,47 @@ def list_users(connect, cursor):
     
     for id, username, email in cursor.fetchall():
         print(id, '-', username, '-', email)
+        
+def user_exists(function):        
+    
+    def wrapper(connect, cursor):
+      id = input("Ingresa el id del usuario a actualizar/eliminar: ")
+      query = "SELECT id FROM users WHERE id= %s"
+      cursor.execute(query, (id,))
+      user = cursor.fetchone() # None  
+      if user:      
+          function(id, connect, cursor)
+      else:
+        print(">>> No existe un usuario con ese id, intenta de nuevo.")
+        
+    wrapper.__doc__ = function.__doc__   
+    return wrapper    
 
-def update_user(connect, cursor):
+@system_clear
+@user_exists    
+def update_user(id, connect, cursor):
     """C) Actualizar usuario"""
-    id = input("Ingresa el id del usuario a actualizar: ")
+    username = input("Ingresa un nuevo username: ")
+    email = input("Ingresa un nuevo email: ")
     
-    query = "SELECT id FROM users WHERE id= %s"
-    cursor.execute(query, (id,))
+    query = "UPDATE users SET username = %s, email = %s WHERE id = %s"
+    values = (username, email, id)
     
-    user = cursor.fetchone() # None
-    
-    if user:
-        username = input("Ingresa un nuevo username: ")
-        email = input("Ingresa un nuevo email: ")
-        
-        query = "UPDATE users SET username = %s, email = %s WHERE id = %s"
-        values = (username, email, id)
-        
-        cursor.execute(query, values)
-        connect.commit()
-        
-        print(">>> Usuario actualizado exitosamente.")
-    else:
-        print(">>> No existe un usuario con ese id, intenta de nuevo")    
-        
-
-def delete_user(connect, cursor):
+    cursor.execute(query, values)
+    connect.commit()   
+   
+@system_clear        
+@user_exists
+def delete_user(id, connect, cursor):
     """D) Eliminar usuario"""
     
-    id = input("Ingresa el id del usuario a eliminar: ")
+    query = "DELETE FROM users WHERE id = %s"
     
-    query = "SELECT id FROM users WHERE id= %s"
     cursor.execute(query, (id,))
+    connect.commit()
     
-    user = cursor.fetchone() # None
-    
-    if user:
-        query = "DELETE FROM users WHERE id = %s"
-        
-        cursor.execute(query, (id,))
-        connect.commit()
-        
-        print(">>> Usuario borrado exitosamente!")
-    else:
-        print(">>> No existe un usuario con ese id, intenta de nuevo")      
+    print(">>> Usuario borrado exitosamente!")
+
      
 
 def default(*args):
