@@ -16,11 +16,15 @@ def create_user(connect, cursor):
     values = (username, email)
     cursor.execute(query, values)
     connect.commit()
-    print("Usuario creado exitosamente.")
+    print(">>> Usuario creado exitosamente.")
 
 def list_users(connect, cursor):
     """B) Listar usuarios"""
-    pass
+    query = "SELECT id, username, email FROM users"
+    cursor.execute(query)
+    
+    for id, username, email in cursor.fetchall():
+        print(id, '-', username, '-', email)
 
 def update_user(connect, cursor):
     """C) Actualizar usuario"""
